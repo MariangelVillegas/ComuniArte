@@ -34,6 +34,6 @@ public class UsuarioRepositorio {
             lista.add(new Usuario(doc.getString("id_usuario"), doc.getString("nombre"),
                     doc.getString("apellido"), doc.getString("email"), doc.getInteger("edad")));
         }
-        return lista;
+        return lista; //esto retorna una lista de usuarios
     }
 }
