@@ -10,20 +10,8 @@ import java.util.Map;
 
 public class EventRepository {
 
-    private static final String LOCALHOST = "localhost";
+    private static final String REDIS_HOST = "localhost";
     private static final int PORT = 6379;
-
-    public Usuario loginUser(String userId, String name) {
-        try (Jedis jedis = new Jedis(LOCALHOST, PORT)) {
-            String key = "user:logged:" + userId;
-
-            jedis.hset(key, "userId", userId);
-            jedis.hset(key, "name", name);
-
-            //TODO se puede agregar expiracion
-            return new Usuario(userId, name, "ape", "email", 1);
-        }
-    }
 
     public Event save(String userId, String name) {
         try (Jedis jedis = new Jedis("LOCALHOST", PORT)) {
@@ -34,14 +22,14 @@ public class EventRepository {
             jedis.hset(key, "userName", name);
             jedis.lpush("event:ids", userId);
 
-            return new Event(name, userId);
+            return new Event(userId, name);
         }
     }
 
     public List<Event> getAll() {
         List<Event> events = new ArrayList<>();
 
-        try (Jedis jedis = new Jedis(LOCALHOST, PORT)) {
+        try (Jedis jedis = new Jedis(REDIS_HOST, PORT)) {
             List<String> ids = jedis.lrange("event:ids", 0, -1);
 
             for (String id : ids) {
@@ -53,7 +41,7 @@ public class EventRepository {
                     String userName = data.get("userName");
                     List<String> questions = jedis.lrange("event:" + id + ":questions", 0, -1);
 
-                    events.add(new Event(userName, userId, questions));
+                    events.add(new Event(userId, userName, questions));
                 }
             }
         }
@@ -61,11 +49,29 @@ public class EventRepository {
         return events;
     }
 
-    public void addQuestion(String eventId, String question) {
-        try (Jedis jedis = new Jedis(LOCALHOST, PORT)) {
-            String questionsKey = "event:" + eventId + ":questions";
+    public void addQuestion(Event event, String question) {
+        try (Jedis jedis = new Jedis(REDIS_HOST, PORT)) {
+            String questionsKey = "event:" + event.getUserId() + ":questions";
 
             jedis.rpush(questionsKey, question);
+        }
+    }
+
+    public Event findById(String id) {
+        try (Jedis jedis = new Jedis("localhost", 6379)) {
+            String key = "event:" + id;
+            Map<String, String> data = jedis.hgetAll(key);
+
+            if (!data.isEmpty()) {
+                String userId = data.get("userId");
+                String userName = data.get("userName");
+
+                List<String> questions = jedis.lrange("event:" + id + ":questions", 0, -1);
+
+                return new Event(userId, userName, questions);
+            } else {
+                return null;
+            }
         }
     }
 }

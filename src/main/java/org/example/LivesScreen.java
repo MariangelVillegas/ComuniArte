@@ -11,16 +11,23 @@ public class LivesScreen {
 
     static Scanner scanner = new Scanner(System.in);
     private static final EventsService eventsService = new EventsService();
+    private static boolean IS_LIVE_ON = false;
 
     public static void showLiveSection() {
-        eventsService.subscribeEvents();
+
         String opt;
-        System.out.println("Nombre del usuario:");
-        String userName = scanner.nextLine();
-        Usuario user = eventsService.saveLoggedUser("1", userName);
+
+        Usuario user = eventsService.getLoggedUser();
+        if(user == null) {
+            eventsService.subscribeEvents();
+            System.out.println("Nombre del usuario:");
+            String userName = scanner.nextLine();
+            user = eventsService.saveLoggedUser("1", userName);
+        }
 
         System.out.println("1. Iniciar directo");
         System.out.println("2. Unirse");
+        System.out.println("3. Logout");
         System.out.println("0. Volver ");
 
         opt = scanner.nextLine();
@@ -28,10 +35,15 @@ public class LivesScreen {
         switch (opt) {
             case "1":
                 Event event = eventsService.startLive(user.getId_usuario(), user.getNombre());
+                System.out.println("Iniciando directo");
                 showHostMenu(event);
                 break;
             case "2":
-                showLiveEvents(userName);
+                showLiveEvents(user.getNombre());
+                break;
+            case "3":
+                eventsService.logOut();
+                showLiveSection();
                 break;
             case "0":
                 break;
@@ -46,7 +58,7 @@ public class LivesScreen {
 
         List<Event> lives = eventsService.getLives();
         lives.forEach(live -> {
-            System.out.println(i + ". " + live.getUserId());
+            System.out.println(i + ". " + live.getName());
         });
         System.out.println("0. Volver");
 
@@ -60,7 +72,7 @@ public class LivesScreen {
     }
 
     private static void showHostMenu(Event event) {
-        System.out.println("Iniciando directo");
+
         String opt;
 
         System.out.println("1. Unirse al chat");
@@ -76,7 +88,7 @@ public class LivesScreen {
                 startChat();
                 break;
             case "2":
-                //finalizar suscripción
+                showQuestions(eventsService.getQuestions(event), event);
                 break;
             case "0":
                 showLiveSection();
@@ -84,6 +96,19 @@ public class LivesScreen {
             default:
                 showHostMenu(event);
         }
+    }
+
+    private static void showQuestions(List<String> questions, Event event) {
+        if(questions.isEmpty()) {
+            System.out.println("<<No hay preguntas>>");
+            showHostMenu(event);
+        }
+
+        questions.forEach(question -> {
+            System.out.println(">> " + question);
+        });
+        System.out.println("0. Volver");
+        showHostMenu(event);
     }
 
     private static void showViewerMenu(Event event, String userName) {
@@ -99,14 +124,15 @@ public class LivesScreen {
             case "1":
                 System.out.println("Ingrese la pregunta");
                 opt = scanner.nextLine();
-                eventsService.addNewQuestion(event.getUserId(), opt);
+                eventsService.addNewQuestion(event, opt);
                 showViewerMenu(event, userName);
                 break;
             case "2":
                 startChat();
                 break;
-            case "3":
+            case "0":
                 showLiveSection();
+                break;
         }
     }
 

@@ -2,6 +2,7 @@ package org.example;
 
 import org.example.model.Event;
 import org.example.model.Usuario;
+import org.example.redis.AuthRepository;
 import org.example.redis.RedisQueueManager;
 import org.example.redis.EventRepository;
 
@@ -14,10 +15,12 @@ public class EventsService {
 
     private RedisQueueManager redisQueue;
     private EventRepository eventRepository;
+    private AuthRepository authRepository;
 
     public EventsService() {
         redisQueue = new RedisQueueManager();
         eventRepository = new EventRepository();
+        authRepository = new AuthRepository();
     }
 
     public Event startLive(String userId, String nombre) {
@@ -26,12 +29,8 @@ public class EventsService {
         return eventRepository.save(userId, nombre);
     }
 
-    public void showQuestions() {
-        redisQueue.getQuestions().forEach(System.out::println);
-    }
-
-    public void addNewQuestion(String eventId, String question) {
-        eventRepository.addQuestion(eventId, question);
+    public void addNewQuestion(Event event, String question) {
+        eventRepository.addQuestion(event, question);
     }
 
     public void subscribeEvents() {
@@ -39,10 +38,22 @@ public class EventsService {
     }
 
     public Usuario saveLoggedUser(String userId, String name) {
-        return eventRepository.loginUser(userId, name);
+        return authRepository.loginUser(userId, name);
     }
 
     public List<Event> getLives() {
         return eventRepository.getAll();
+    }
+
+    public List<String> getQuestions(Event event) {
+        return eventRepository.findById(event.getUserId()).getQuestions();
+    }
+
+    public Usuario getLoggedUser() {
+        return authRepository.getLoggedUser();
+    }
+
+    public void logOut() {
+        authRepository.logoutUser();
     }
 }
