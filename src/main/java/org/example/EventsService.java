@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.model.Donation;
 import org.example.model.Event;
 import org.example.model.Usuario;
 import org.example.redis.AuthRepository;
@@ -31,6 +32,7 @@ public class EventsService {
 
     public void addNewQuestion(Event event, String question) {
         eventRepository.addQuestion(event, question);
+        redisQueue.publish(QUESTIONS_CHANNEL, "Un usuario realizó una pregunta");
     }
 
     public void subscribeEvents() {
@@ -55,5 +57,18 @@ public class EventsService {
 
     public void logOut() {
         authRepository.logoutUser();
+    }
+
+    public void addDonation(Event event, Double opt, String userDonorId) {
+        eventRepository.addDonation(event, userDonorId, opt);
+        redisQueue.publish(QUESTIONS_CHANNEL, "Recibiste una donación de " + userDonorId);
+    }
+
+    public List<Donation> getDonations(Event event) {
+        return eventRepository.findById(event.getUserId()).getDonations();
+    }
+
+    public Event getLiveEvent(Usuario user) {
+        return eventRepository.findById(user.getId_usuario());
     }
 }

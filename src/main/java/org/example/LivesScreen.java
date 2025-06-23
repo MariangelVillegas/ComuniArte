@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.model.Donation;
 import org.example.model.Event;
 import org.example.model.Usuario;
 
@@ -25,7 +26,8 @@ public class LivesScreen {
             user = eventsService.saveLoggedUser("1", userName);
         }
 
-        System.out.println("1. Iniciar directo");
+        if (IS_LIVE_ON) System.out.println("1. Ver opciones");
+        else System.out.println("1. Iniciar directo");
         System.out.println("2. Unirse");
         System.out.println("3. Logout");
         System.out.println("0. Volver ");
@@ -34,7 +36,14 @@ public class LivesScreen {
 
         switch (opt) {
             case "1":
-                Event event = eventsService.startLive(user.getId_usuario(), user.getNombre());
+                Event event;
+                if(!IS_LIVE_ON) {
+                    event = eventsService.startLive(user.getId_usuario(), user.getNombre());
+                } else {
+                    event = eventsService.getLiveEvent(user);
+                }
+
+                IS_LIVE_ON = true;
                 System.out.println("Iniciando directo");
                 showHostMenu(event);
                 break;
@@ -43,6 +52,7 @@ public class LivesScreen {
                 break;
             case "3":
                 eventsService.logOut();
+                IS_LIVE_ON = false;
                 showLiveSection();
                 break;
             case "0":
@@ -90,12 +100,28 @@ public class LivesScreen {
             case "2":
                 showQuestions(eventsService.getQuestions(event), event);
                 break;
+            case "3":
+                showDonations(eventsService.getDonations(event), event);
+                break;
             case "0":
                 showLiveSection();
                 break;
             default:
                 showHostMenu(event);
         }
+    }
+
+    private static void showDonations(List<Donation> donations, Event event) {
+        if (donations.isEmpty()) {
+            System.out.println("<<No hay donaciones>>");
+            showHostMenu(event);
+        }
+
+        donations.forEach(donation -> {
+            System.out.println(">> El usuario " + donation.getUserId() + " dono " + donation.getAmount());
+        });
+        System.out.println("0. Volver");
+        showHostMenu(event);
     }
 
     private static void showQuestions(List<String> questions, Event event) {
@@ -115,19 +141,26 @@ public class LivesScreen {
         String opt;
 
         System.out.println("1. Enviar pregunta");
-        System.out.println("2. Unirse al chat");
+        System.out.println("2. Enviar donación");
+        System.out.println("3. Unirse al chat");
         System.out.println("0. Volver");
 
         opt = scanner.nextLine();
 
         switch (opt) {
             case "1":
-                System.out.println("Ingrese la pregunta");
+                System.out.println("Ingrese la pregunta:");
                 opt = scanner.nextLine();
                 eventsService.addNewQuestion(event, opt);
                 showViewerMenu(event, userName);
                 break;
             case "2":
+                System.out.println("Ingrese la donacion:");
+                opt = scanner.nextLine();
+                eventsService.addDonation(event, Double.valueOf(opt), userName);
+                showViewerMenu(event, userName);
+                break;
+            case "3":
                 startChat();
                 break;
             case "0":

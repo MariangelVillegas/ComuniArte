@@ -1,10 +1,12 @@
 package org.example.redis;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.model.Donation;
 import org.example.model.Event;
-import org.example.model.Usuario;
 import redis.clients.jedis.Jedis;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -40,8 +42,8 @@ public class EventRepository {
                     String userId = data.get("userId");
                     String userName = data.get("userName");
                     List<String> questions = jedis.lrange("event:" + id + ":questions", 0, -1);
-
-                    events.add(new Event(userId, userName, questions));
+                    List<Donation> donations = getDonations(jedis.lrange("event:" + id + ":donations", 0, -1));
+                    events.add(new Event(userId, userName, questions, donations));
                 }
             }
         }
@@ -67,11 +69,41 @@ public class EventRepository {
                 String userName = data.get("userName");
 
                 List<String> questions = jedis.lrange("event:" + id + ":questions", 0, -1);
+                List<Donation> donations = getDonations(jedis.lrange("event:" + id + ":donations", 0, -1));
 
-                return new Event(userId, userName, questions);
+                return new Event(userId, userName, questions, donations);
             } else {
                 return null;
             }
         }
     }
+
+    public void addDonation(Event event, String userDonorId, double amount) {
+        try (Jedis jedis = new Jedis(REDIS_HOST, PORT)) {
+            String key = "event:" + event.getUserId() + ":donations";
+
+            Donation donation = new Donation(userDonorId, amount);
+            ObjectMapper mapper = new ObjectMapper();
+            String json = mapper.writeValueAsString(donation);
+
+            jedis.rpush(key, json);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private List<Donation> getDonations(List<String> donationsString) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            List<Donation> donations = new ArrayList<>();
+            for (String donation : donationsString) {
+                donations.add(mapper.readValue(donation, Donation.class));
+            }
+            return donations;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+
 }
