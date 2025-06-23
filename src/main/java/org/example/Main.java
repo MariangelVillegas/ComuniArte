@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.bd.ConexionNeo4j;
 import org.example.model.Usuario;
 import org.example.repositorio.UsuarioRepositorio;
 import redis.embedded.RedisServer;
@@ -13,6 +14,7 @@ public class Main {
 
     static UsuarioRepositorio usuarioRepositorio = new UsuarioRepositorio();
     private static final Scanner scanner = new Scanner(System.in);
+    private static String tipoUsuario = null;
 
 
     public static void main(String[] args) throws IOException {
@@ -72,7 +74,7 @@ public class Main {
 
     public static void addUser() {
         System.out.println("/////////");
-        String[] data = new String[4];
+        String[] data = new String[5];
 
         System.out.println("Ingrese el DNI");
         data[0] = scanner.nextLine();
@@ -86,11 +88,29 @@ public class Main {
         System.out.println("Ingrese el Email:");
         data[3] = scanner.nextLine();
 
+        boolean aux = false;
+        String tipo;
+
+        do {
+            System.out.println("Ingrese el tipo de Usuario: 1 para creador o 2 para espectador");
+            tipo = scanner.nextLine();
+            switch (tipo){
+                case "2":
+                case "1":
+                    tipoUsuario = (tipo.equals("1")) ? "Creador" : "Espectadr";
+                    data[4] = tipoUsuario;
+                    aux = true;
+                    break;
+                default:
+                    System.out.println("Tipo de usuario incorrecto");
+            }
+        }while (!aux);
+
         System.out.println("Ingrese la Edad: ");
         int edad = scanner.nextInt();
         scanner.nextLine();
 
-        usuarioRepositorio.guardar(new Usuario(data[0], data[1],data[2], data[3],edad));
+        usuarioRepositorio.guardar(new Usuario(data[0], data[1],data[2], data[3],edad,data[4]));
     }
 
     private static void listUsers(){
@@ -105,8 +125,8 @@ public class Main {
             System.out.println("!!!!!!!!!!!!!!");
             i+=1;
         }
-
     }
+
     private static void getUserbyId(){
         System.out.println("Ingrese el ID del usuario");
         Usuario usuario = usuarioRepositorio.obtenerUsuario(scanner.nextLine());

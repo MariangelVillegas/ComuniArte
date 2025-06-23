@@ -44,5 +44,10 @@
             <artifactId>embedded-redis</artifactId>
             <version>0.6</version>
         </dependency>
+        <dependency>
+            <groupId>org.neo4j.driver</groupId>
+            <artifactId>neo4j-java-driver</artifactId>
+            <version>5.28.4</version> <!-- o la más reciente -->
+        </dependency>
     </dependencies>
 </project>

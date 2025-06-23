@@ -6,6 +6,16 @@ public class Usuario {
     private String apellido;
     private String email;
     private int edad;
+    private String tipo;
+
+    public Usuario(String id_usuario, String nombre, String apellido,String email, int edad, String tipo) {
+        this.id_usuario = id_usuario;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.email = email;
+        this.edad= edad;
+        this.tipo = tipo;
+    }
 
     public Usuario(String id_usuario, String nombre, String apellido,String email, int edad) {
         this.id_usuario = id_usuario;
@@ -14,6 +24,7 @@ public class Usuario {
         this.email = email;
         this.edad= edad;
     }
+
 
     public String getId_usuario() {
         return id_usuario;
@@ -33,5 +44,7 @@ public class Usuario {
         return edad;
     }
 
-
+    public String getTipo() {
+        return tipo;
+    }
 }
