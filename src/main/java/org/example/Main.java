@@ -19,12 +19,11 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         RedisServer redisServer = getRedisServer();
-        showMenu();
+        LoginScreen.mainMenu();
         redisServer.stop();
-
     }
 
-    private static void showMenu() {
+    public static void showMenu() {
         String opt;
         System.out.println("Bienvenidos a ComuniArte, Seleccione una opcion");
         try {
@@ -108,9 +107,11 @@ public class Main {
 
         System.out.println("Ingrese la Edad: ");
         int edad = scanner.nextInt();
-        scanner.nextLine();
 
-        usuarioRepositorio.guardar(new Usuario(data[0], data[1],data[2], data[3],edad,data[4]));
+        System.out.println("Ingrese la password: ");
+        String password = scanner.nextLine();
+
+        usuarioRepositorio.guardar(new Usuario(data[0], data[1],data[2], data[3],edad,data[4], password));
     }
 
     private static void listUsers(){

@@ -31,7 +31,8 @@ public class UsuarioRepositorio {
                 .append("apellido", usuario.getApellido())
                 .append("email", usuario.getEmail())
                 .append("edad", usuario.getEdad())
-                .append("Tipo de usuario", usuario.getTipo());
+                .append("Tipo de usuario", usuario.getTipo())
+                .append("password", usuario.getPassword());
 
         coleccion.insertOne(doc);
         guardarEnNeo4j(usuario);
@@ -43,7 +44,7 @@ public class UsuarioRepositorio {
         for (Document doc : coleccion.find()) {
             lista.add(new Usuario(doc.getString("id_usuario"), doc.getString("nombre"),
                     doc.getString("apellido"), doc.getString("email"), doc.getInteger("edad"),
-                    doc.getString("tipo")));
+                    doc.getString("tipo"), doc.getString("password")));
         }
         return lista; //esto retorna una lista de usuarios
     }
@@ -74,7 +75,7 @@ public class UsuarioRepositorio {
         }
         Usuario usuario = new Usuario(doc.getString("id_usuario"), doc.getString("nombre"),
                 doc.getString("apellido"), doc.getString("email"), doc.getInteger(
-                "edad"), doc.getString("tipo"));
+                "edad"), doc.getString("tipo"), doc.getString("password"));
         return usuario;
 
     }
@@ -92,5 +93,16 @@ public class UsuarioRepositorio {
         }
     }
 
+    public Usuario getUsuarioByEmail(String email) {
+        Document doc = coleccion.find(eq("email", email)).first();
+        if (doc == null) {
+            return null;
+        }
+        Usuario usuario = new Usuario(doc.getString("id_usuario"), doc.getString("nombre"),
+                doc.getString("apellido"), doc.getString("email"), doc.getInteger(
+                "edad"), doc.getString("tipo"), doc.getString("password"));
+        return usuario;
+
+    }
 
 }

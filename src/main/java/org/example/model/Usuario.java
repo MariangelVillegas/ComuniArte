@@ -7,15 +7,7 @@ public class Usuario {
     private String email;
     private int edad;
     private String tipo;
-
-    public Usuario(String id_usuario, String nombre, String apellido,String email, int edad, String tipo) {
-        this.id_usuario = id_usuario;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.email = email;
-        this.edad= edad;
-        this.tipo = tipo;
-    }
+    private String password = "";
 
     public Usuario(String id_usuario, String nombre, String apellido,String email, int edad) {
         this.id_usuario = id_usuario;
@@ -23,6 +15,16 @@ public class Usuario {
         this.apellido = apellido;
         this.email = email;
         this.edad= edad;
+    }
+
+    public Usuario(String id_usuario, String nombre, String apellido,String email, int edad, String tipo, String password) {
+        this.id_usuario = id_usuario;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.email = email;
+        this.edad= edad;
+        this.tipo = tipo;
+        this.password = password;
     }
 
 
@@ -47,4 +49,5 @@ public class Usuario {
     public String getTipo() {
         return tipo;
     }
+    public String getPassword() {return password;}
 }

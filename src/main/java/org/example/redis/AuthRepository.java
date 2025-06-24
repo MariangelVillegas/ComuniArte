@@ -1,5 +1,6 @@
 package org.example.redis;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.model.Usuario;
 import redis.clients.jedis.Jedis;
 
@@ -40,4 +41,16 @@ public class AuthRepository {
             return new Usuario(userId, name, "apellido", "email", 0);
         }
     }
+
+    public void saveLoggedUser(Usuario usuario) {
+        try (Jedis jedis = new Jedis(REDIS_HOST, PORT)) {
+            ObjectMapper mapper = new ObjectMapper();
+            String json = mapper.writeValueAsString(usuario);
+            jedis.set(KEY, json);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
