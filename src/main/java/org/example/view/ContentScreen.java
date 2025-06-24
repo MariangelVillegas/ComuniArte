@@ -1,0 +1,111 @@
+package org.example.view;
+
+import org.example.Main;
+import org.example.model.Category;
+import org.example.model.Post;
+import org.example.model.Usuario;
+import org.example.service.AuthService;
+import org.example.service.ContentService;
+
+import java.util.List;
+import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
+
+public class ContentScreen {
+
+    private static Scanner scanner = new Scanner(System.in);
+    private static final ContentService contentService = new ContentService();
+    private static final AuthService authService = new AuthService();
+
+    // Gestión de contenidos
+    // Videos, audios, textos, transmisiones en vivo, organizados por categoría y etiquetas
+    // comentarios, likes y visualizaciones
+    public static void showMenu() {
+
+        System.out.println("1. Crear posteo ");
+        System.out.println("2. Ver posteos ");
+        System.out.println("3. Mis posteos");
+        System.out.println("0. Volver ");
+
+        String opt = scanner.nextLine().trim();
+
+        switch (opt) {
+            case "1":
+                showNewPost();
+                break;
+            case "2":
+                showAllPosts();
+                break;
+            case "3":
+                break;
+            case "0":
+                Main.showMenu();
+                break;
+            default:
+                System.out.println("Opción no válida");
+        }
+    }
+
+    private static void showNewPost() {
+        System.out.println("Escriba un posteo.");
+        String post = scanner.nextLine();
+
+        System.out.println("Escriba una categoría");
+        String category = scanner.nextLine();
+        Usuario loggedUser = authService.getLoggedUser();
+
+        contentService.savePost(new Post(loggedUser.get_id(), post, Category.valueOf(category)));
+        showMenu();
+    }
+
+    private static void showAllPosts() {
+        List<Post> posts = contentService.getAllPost();
+        AtomicInteger index = new AtomicInteger(1);
+        posts.forEach(post -> {
+            System.out.println(index.getAndIncrement() + ". " + post.toString());
+        });
+
+        System.out.println("0. Volver");
+        String opt = scanner.nextLine().trim();
+        if (opt.equals("0")) {
+            showMenu();
+        }
+
+        showPostScreen(posts.get(Integer.parseInt(opt)-1));
+    }
+
+    private static void showPostScreen(Post post) {
+        //contentService.addVisit();
+        System.out.println();
+        System.out.println(post.toString());
+        System.out.println("Comentarios:");
+        if(post.getComments().isEmpty()) {
+            System.out.println(">> No hay comentarios <<");
+        }else {
+            post.getComments().forEach(comment -> {System.out.println(">> " + comment.getText() + " <<");});
+        }
+
+        System.out.println("1. Dar like");
+        System.out.println("2. Comentar ");
+        System.out.println("0. Volver ");
+
+        String opt = scanner.nextLine().trim();
+        switch (opt) {
+            case "1":
+                contentService.addLike(post);
+                showPostScreen(contentService.getPostById(post.get_id()));
+                break;
+            case "2":
+                System.out.println("Ingrese su comentario:");
+                String comentario = scanner.nextLine();
+                contentService.addComment(post, comentario);
+                showPostScreen(contentService.getPostById(post.get_id()));
+                break;
+            case "0":
+                Main.showMenu();
+                break;
+            default:
+                System.out.println("Opción no válida");
+        }
+    }
+}

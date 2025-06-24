@@ -2,6 +2,7 @@ package org.example;
 
 import org.example.model.Usuario;
 import org.example.repositorio.UsuarioRepositorio;
+import org.example.view.ContentScreen;
 import org.example.view.LivesScreen;
 import org.example.view.LoginScreen;
 import redis.embedded.RedisServer;
@@ -29,8 +30,8 @@ public class Main {
         System.out.println("Bienvenidos a ComuniArte, Seleccione una opcion");
         try {
             do{
-
-                System.out.println("1. Posteos ");
+                //1. Gestión de contenidos
+                System.out.println("1. Gestión de contenido ");
                 System.out.println("2. Listar usuarios: ");
                 System.out.println("3. Transmisiones en vivo ");
                 System.out.println("4. Obtener Usuario por ID ");
@@ -42,7 +43,7 @@ public class Main {
 
                 switch (opt) {
                     case "1":
-
+                        ContentScreen.showMenu();
                         break;
                     case "2":
                         listUsers();
@@ -70,57 +71,15 @@ public class Main {
         }catch (Exception e) {
             System.err.println("Error de conexión: " + e.getMessage());
             e.printStackTrace();
+            showMenu();
         }
-    }
-
-    public static void addUser() {
-        System.out.println("/////////");
-        String[] data = new String[5];
-
-        System.out.println("Ingrese el DNI");
-        data[0] = scanner.nextLine();
-
-        System.out.println("Ingrese el Nombre:");
-        data[1] = scanner.nextLine();
-
-        System.out.println("Ingrese el Apellido:");
-        data[2] = scanner.nextLine();
-
-        System.out.println("Ingrese el Email:");
-        data[3] = scanner.nextLine();
-
-        boolean aux = false;
-        String tipo;
-
-        do {
-            System.out.println("Ingrese el tipo de Usuario: 1 para creador o 2 para espectador");
-            tipo = scanner.nextLine();
-            switch (tipo){
-                case "2":
-                case "1":
-                    tipoUsuario = (tipo.equals("1")) ? "Creador" : "Espectadr";
-                    data[4] = tipoUsuario;
-                    aux = true;
-                    break;
-                default:
-                    System.out.println("Tipo de usuario incorrecto");
-            }
-        }while (!aux);
-
-        System.out.println("Ingrese la Edad: ");
-        int edad = scanner.nextInt();
-
-        System.out.println("Ingrese la password: ");
-        String password = scanner.nextLine();
-
-        usuarioRepositorio.guardar(new Usuario(data[0], data[1],data[2], data[3],edad,data[4], password));
     }
 
     private static void listUsers(){
         int i = 1;
         for(Usuario usuario: usuarioRepositorio.obtenerTodos()){
             System.out.println("Usuario #" + i);
-            System.out.println("DNI: " + usuario.getId_usuario());
+            System.out.println("DNI: " + usuario.get_id());
             System.out.println("Nombre: " + usuario.getNombre());
             System.out.println("Apellido: " + usuario.getApellido());
             System.out.println("Email: " + usuario.getEmail());
@@ -134,7 +93,7 @@ public class Main {
         System.out.println("Ingrese el ID del usuario");
         Usuario usuario = usuarioRepositorio.obtenerUsuario(scanner.nextLine());
         if (usuario!=null) {
-            System.out.println("DNI: " + usuario.getId_usuario());
+            System.out.println("DNI: " + usuario.get_id());
             System.out.println("Nombre: " + usuario.getNombre());
             System.out.println("Apellido: " + usuario.getApellido());
             System.out.println("Email: " + usuario.getEmail());

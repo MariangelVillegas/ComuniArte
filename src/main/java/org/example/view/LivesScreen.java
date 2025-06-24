@@ -1,5 +1,6 @@
 package org.example.view;
 
+import org.example.service.AuthService;
 import org.example.service.EventsService;
 import org.example.model.Donation;
 import org.example.model.Event;
@@ -13,18 +14,19 @@ public class LivesScreen {
 
     static Scanner scanner = new Scanner(System.in);
     private static final EventsService eventsService = new EventsService();
+    private static final AuthService authService = new AuthService();
     private static boolean IS_LIVE_ON = false;
 
     public static void showLiveSection() {
 
         String opt;
 
-        Usuario user = eventsService.getLoggedUser();
+        Usuario user = authService.getLoggedUser();
         if(user == null) {
             eventsService.subscribeEvents();
-            System.out.println("Nombre del usuario:");
-            String userName = scanner.nextLine();
-            user = eventsService.saveLoggedUser("1", userName);
+           // System.out.println("Nombre del usuario:");
+           // String userName = scanner.nextLine();
+            //user = eventsService.saveLoggedUser("1", userName);
         }
 
         if (IS_LIVE_ON) System.out.println("1. Ver opciones");
@@ -39,7 +41,7 @@ public class LivesScreen {
             case "1":
                 Event event;
                 if(!IS_LIVE_ON) {
-                    event = eventsService.startLive(user.getId_usuario(), user.getNombre());
+                    event = eventsService.startLive(user.get_id(), user.getNombre());
                 } else {
                     event = eventsService.getLiveEvent(user);
                 }

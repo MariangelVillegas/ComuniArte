@@ -1,7 +1,7 @@
 package org.example.model;
 
 public class Usuario {
-    private String id_usuario;
+    private String _id;
     private String nombre;
     private String apellido;
     private String email;
@@ -9,16 +9,16 @@ public class Usuario {
     private String tipo;
     private String password = "";
 
-    public Usuario(String id_usuario, String nombre, String apellido,String email, int edad) {
-        this.id_usuario = id_usuario;
+    public Usuario() {}
+    public Usuario(String nombre, String apellido, String email, int edad) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;
         this.edad= edad;
     }
 
-    public Usuario(String id_usuario, String nombre, String apellido,String email, int edad, String tipo, String password) {
-        this.id_usuario = id_usuario;
+    public Usuario(String _id, String nombre, String apellido, String email, int edad, String tipo, String password) {
+        this._id = _id;
         this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;
@@ -28,8 +28,8 @@ public class Usuario {
     }
 
 
-    public String getId_usuario() {
-        return id_usuario;
+    public String get_id() {
+        return _id;
     }
 
     public String getNombre() {

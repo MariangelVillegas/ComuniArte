@@ -26,7 +26,7 @@ public class UsuarioRepositorio {
     }
 
     public void guardar(Usuario usuario) {
-        Document doc = new Document("id_usuario", usuario.getId_usuario())
+        Document doc = new Document("id_usuario", usuario.get_id())
                 .append("nombre", usuario.getNombre())
                 .append("apellido", usuario.getApellido())
                 .append("email", usuario.getEmail())
@@ -56,7 +56,7 @@ public class UsuarioRepositorio {
     public String modificarUsuario(String id, String mail) {
         Usuario usuario = getUsuario(id);
         coleccion.updateOne(
-                eq("id_usuario", usuario.getId_usuario()),  // filtro
+                eq("id_usuario", usuario.get_id()),  // filtro
                 combine(set("email", mail))
         );
         return "Usuario de id: " + id + " modificado";
@@ -84,7 +84,7 @@ public class UsuarioRepositorio {
         try (Session session = conexionNeo4j.getDriver().session()) {
             String query = "CREATE (u:Usuario {id_usuario: $id, nombre: $nombre, tipo: $tipo})";
             session.run(query, org.neo4j.driver.Values.parameters(
-                            "id", usuario.getId_usuario(),
+                            "id", usuario.get_id(),
                             "nombre", usuario.getNombre(),
                             "tipo", usuario.getTipo()
                     ));

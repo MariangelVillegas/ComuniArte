@@ -28,4 +28,8 @@ public class AuthService {
     public void signUpUser(Usuario usuario) {
         usuarioRepositorio.guardar(usuario);
     }
+
+    public Usuario getLoggedUser() {
+        return authRepository.getLoggedUser();
+    }
 }

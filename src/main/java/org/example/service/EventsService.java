@@ -39,10 +39,6 @@ public class EventsService {
         redisQueue.subscribe(EVENTS_CHANNEL);
     }
 
-    public Usuario saveLoggedUser(String userId, String name) {
-        return authRepository.loginUser(userId, name);
-    }
-
     public List<Event> getLives() {
         return eventRepository.getAll();
     }
@@ -69,6 +65,6 @@ public class EventsService {
     }
 
     public Event getLiveEvent(Usuario user) {
-        return eventRepository.findById(user.getId_usuario());
+        return eventRepository.findById(user.get_id());
     }
 }
