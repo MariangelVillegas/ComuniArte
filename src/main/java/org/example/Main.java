@@ -1,8 +1,9 @@
 package org.example;
 
-import org.example.bd.ConexionNeo4j;
+import org.example.crud.Neo4jCRUD;
+import org.example.model.Contenido;
 import org.example.model.Usuario;
-import org.example.repositorio.UsuarioRepositorio;
+import org.example.crud.MongoCRUD;
 import redis.embedded.RedisServer;
 
 import java.io.IOException;
@@ -12,10 +13,10 @@ import java.util.Scanner;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
 
-    static UsuarioRepositorio usuarioRepositorio = new UsuarioRepositorio();
+    static MongoCRUD usuarioRepositorio = new MongoCRUD();
     private static final Scanner scanner = new Scanner(System.in);
     private static String tipoUsuario = null;
-
+    static Neo4jCRUD neo4jCRUD = new Neo4jCRUD();
 
     public static void main(String[] args) throws IOException {
         RedisServer redisServer = getRedisServer();
@@ -35,6 +36,10 @@ public class Main {
                 System.out.println("4. Obtener Usuario por ID ");
                 System.out.println("5. Modificar mail por ID: ");
                 System.out.println("6. Eliminar usuario : ");
+                System.out.println("7. Seguir usuario : ");
+                System.out.println("8. Dejar de seguir : ");
+                System.out.println("9. Crear contenido");
+                System.out.println("10 Agregar like a contenido");
                 System.out.println("0. Salir: ");
 
                 opt = scanner.nextLine().trim();
@@ -57,6 +62,18 @@ public class Main {
                         break;
                     case "6":
                         EliminarUsuario();
+                        break;
+                    case "7":
+                        SeguirUsuario();
+                        break;
+                    case "8":
+                        dejarSeguirUsuario();
+                        break;
+                    case "9":
+                        crearContenido();
+                        break;
+                    case "10":
+                        likeContenido();
                         break;
                     case "0":
                         System.out.println("Saliendo");
@@ -164,6 +181,43 @@ public class Main {
         }
 
     }
+    private static void SeguirUsuario(){
+        System.out.println("Ingrese el ID del seguidor");
+        String idSeguidor = scanner.nextLine();
+        System.out.println("Ingrese el ID del seguido");
+        String idSeguido = scanner.nextLine();
+
+        Neo4jCRUD.seguirUsuario(idSeguidor,idSeguido);
+
+    }
+
+    private static void dejarSeguirUsuario(){
+        System.out.println("Ingrese el ID del seguidor");
+        String idSeguidor = scanner.nextLine();
+        System.out.println("Ingrese el ID del seguido");
+        String idSeguido = scanner.nextLine();
+
+        Neo4jCRUD.DejarDeSeguirUsuario(idSeguidor,idSeguido);
+
+    }
+    private static void crearContenido(){
+
+        Usuario usuario = new Usuario("123","LO","98");
+        System.out.println("Ingrese el id del contenido");
+        String id_contenido = scanner.nextLine();
+        System.out.println("Ingrese el titulo");
+        String titulo = scanner.nextLine();
+        System.out.println("Ingrese la categoria");
+        String categoria = scanner.nextLine();
+
+        Neo4jCRUD.crearContenido(new Contenido(id_contenido,titulo,categoria,usuario));
+
+    }
+    private static void likeContenido(){
+        Neo4jCRUD.Interaccion("123","233");
+
+    }
+
 
 
     private static RedisServer getRedisServer() throws IOException {

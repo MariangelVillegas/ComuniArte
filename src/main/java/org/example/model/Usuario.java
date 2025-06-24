@@ -25,6 +25,11 @@ public class Usuario {
         this.edad= edad;
     }
 
+    public Usuario(String id_usuario, String nombre, String tipo) {
+        this.id_usuario = id_usuario;
+        this.nombre = nombre;
+        this.tipo = tipo;
+    }
 
     public String getId_usuario() {
         return id_usuario;

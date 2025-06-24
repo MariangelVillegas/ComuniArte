@@ -1,4 +1,4 @@
-package org.example.repositorio;
+package org.example.crud;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -15,14 +15,13 @@ import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.set;
 
-public class UsuarioRepositorio {
+public class MongoCRUD {
     private final MongoCollection<Document> coleccion;
-    private final ConexionNeo4j conexionNeo4j;
 
-    public UsuarioRepositorio() {
+
+    public MongoCRUD() {
         MongoDatabase db = Conexion.getClient().getDatabase("comuniarte");
         this.coleccion = db.getCollection("usuarios");
-        this.conexionNeo4j = new ConexionNeo4j();
     }
 
     public void guardar(Usuario usuario) {
@@ -34,7 +33,8 @@ public class UsuarioRepositorio {
                 .append("Tipo de usuario", usuario.getTipo());
 
         coleccion.insertOne(doc);
-        guardarEnNeo4j(usuario);
+
+        Neo4jCRUD.guardarEnNeo4j(usuario);
 
     }
 
@@ -78,19 +78,4 @@ public class UsuarioRepositorio {
         return usuario;
 
     }
-
-    private void guardarEnNeo4j(Usuario usuario) {
-        try (Session session = conexionNeo4j.getDriver().session()) {
-            String query = "CREATE (u:Usuario {id_usuario: $id, nombre: $nombre, tipo: $tipo})";
-            session.run(query, org.neo4j.driver.Values.parameters(
-                            "id", usuario.getId_usuario(),
-                            "nombre", usuario.getNombre(),
-                            "tipo", usuario.getTipo()
-                    ));
-        } catch (Exception e) {
-            System.err.println("Error guardando en Neo4j: " + e.getMessage());
-        }
-    }
-
-
 }
