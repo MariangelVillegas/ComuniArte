@@ -1,8 +1,9 @@
 package org.example;
 
-import org.example.bd.ConexionNeo4j;
 import org.example.model.Usuario;
 import org.example.repositorio.UsuarioRepositorio;
+import org.example.view.LivesScreen;
+import org.example.view.LoginScreen;
 import redis.embedded.RedisServer;
 
 import java.io.IOException;
@@ -28,7 +29,8 @@ public class Main {
         System.out.println("Bienvenidos a ComuniArte, Seleccione una opcion");
         try {
             do{
-                System.out.println("1. Agregar Usuario: ");
+
+                System.out.println("1. Posteos ");
                 System.out.println("2. Listar usuarios: ");
                 System.out.println("3. Transmisiones en vivo ");
                 System.out.println("4. Obtener Usuario por ID ");
@@ -40,7 +42,7 @@ public class Main {
 
                 switch (opt) {
                     case "1":
-                        addUser();
+
                         break;
                     case "2":
                         listUsers();

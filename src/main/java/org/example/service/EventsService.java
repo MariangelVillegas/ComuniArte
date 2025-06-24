@@ -1,11 +1,11 @@
-package org.example;
+package org.example.service;
 
 import org.example.model.Donation;
 import org.example.model.Event;
 import org.example.model.Usuario;
-import org.example.redis.AuthRepository;
+import org.example.repositorio.AuthRepository;
 import org.example.redis.RedisQueueManager;
-import org.example.redis.EventRepository;
+import org.example.repositorio.EventRepository;
 
 import java.util.List;
 

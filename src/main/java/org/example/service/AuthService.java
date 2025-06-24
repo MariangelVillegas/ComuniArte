@@ -1,8 +1,7 @@
-package org.example;
+package org.example.service;
 
-import org.example.model.LoggedUser;
 import org.example.model.Usuario;
-import org.example.redis.AuthRepository;
+import org.example.repositorio.AuthRepository;
 import org.example.repositorio.UsuarioRepositorio;
 
 public class AuthService {

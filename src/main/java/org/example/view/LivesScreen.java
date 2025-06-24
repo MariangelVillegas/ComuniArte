@@ -1,5 +1,6 @@
-package org.example;
+package org.example.view;
 
+import org.example.service.EventsService;
 import org.example.model.Donation;
 import org.example.model.Event;
 import org.example.model.Usuario;

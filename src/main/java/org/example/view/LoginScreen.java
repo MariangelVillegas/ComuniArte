@@ -1,5 +1,7 @@
-package org.example;
+package org.example.view;
 
+import org.example.service.AuthService;
+import org.example.Main;
 import org.example.model.Usuario;
 
 import java.util.Scanner;

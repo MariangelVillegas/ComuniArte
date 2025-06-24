@@ -1,4 +1,4 @@
-package org.example.redis;
+package org.example.repositorio;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.model.Donation;
