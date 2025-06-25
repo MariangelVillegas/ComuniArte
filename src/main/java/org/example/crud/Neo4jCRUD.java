@@ -1,7 +1,7 @@
 package org.example.crud;
 
 import org.example.bd.ConexionNeo4j;
-import org.example.model.Contenido;
+import org.example.model.Post;
 import org.example.model.Usuario;
 import org.neo4j.driver.*;
 import org.neo4j.driver.Record;
@@ -44,8 +44,6 @@ public class  Neo4jCRUD {
         } else {
             System.out.println("El usuario que quiere seguir no existe");
         }
-
-
     }
 
     public static Usuario obtenerUsuarioPorIdUsuario(String idUsuario) {
@@ -91,17 +89,17 @@ public class  Neo4jCRUD {
 
         }
     }
-    public static void crearContenido(Contenido contenido){
+    public static void crearContenido(Post contenido){
         try (Session session = conexionNeo4j.getDriver().session()) {
             String query = "CREATE (c:Contenido {id_contenido: $id_contenido, titulo: $titulo, categoria: $categoria})";
             session.run(query, Values.parameters(
-                    "id_contenido", contenido.getId_contenido(),
-                    "titulo", contenido.getTitulo(),
-                    "categoria", contenido.getCategoria()));
+                    "id_contenido", contenido.get_id(),
+                    "titulo", contenido.getText(),
+                    "categoria", contenido.getCategory()));
         } catch (Exception e) {
             System.err.println("Error guardando en Neo4j: " + e.getMessage());
         }
-        UsuarioContenido(contenido.getCreador().get_id(), contenido.getId_contenido());
+        UsuarioContenido(contenido.getId_user(), contenido.get_id());
 
     }
     public static void UsuarioContenido(String id_usuario, String id_contenido) {
@@ -128,6 +126,22 @@ public class  Neo4jCRUD {
             });
         }
 
+    }
+
+    public static boolean usuarioSigueA(String idSeguidor, String idSeguido) {
+        try (Session session = conexionNeo4j.getDriver().session()) {
+            return session.readTransaction(tx -> {
+                Result result = tx.run("""
+                MATCH (a:Usuario {id_usuario: $idSeguidor})-[:SIGUE]->(b:Usuario {id_usuario: $idSeguido})
+                RETURN count(b) > 0 AS sigue
+            """, Values.parameters("idSeguidor", idSeguidor, "idSeguido", idSeguido));
+
+                return result.single().get("sigue").asBoolean();
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 }

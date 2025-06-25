@@ -17,10 +17,10 @@ public class ContentService {
         this.authService = new AuthService();
     }
 
-    public void savePost(Post post) {
-        contentRepository.createPost(post);
+    public Post savePost(Post post) {
+        String id = contentRepository.createPost(post);
 
-        contentRepository.getAllPosts();
+        return contentRepository.getPostById(id);
     }
 
     public List<Post> getAllPost() {

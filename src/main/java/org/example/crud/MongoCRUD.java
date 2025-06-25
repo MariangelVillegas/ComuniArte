@@ -53,17 +53,16 @@ public class MongoCRUD {
         return getUsuario(id);
     }
 
-    public String modificarUsuario(String id, String mail) {
+    public String modificarUsuario(String id, String name) {
         Usuario usuario = getUsuario(id);
         coleccion.updateOne(
-                eq("id_usuario", usuario.get_id()),  // filtro
-                combine(set("email", mail))
+                eq("id_usuario", usuario.get_id()),
+                combine(set("nombre", name))
         );
         return "Usuario de id: " + id + " modificado";
     }
 
     public String eliminarUsuario(String id) {
-        Usuario usuario = getUsuario(id);
         coleccion.deleteOne(eq("id_usuario", id));
         return "Usuario de id: " + id + " eliminado";
     }

@@ -1,6 +1,7 @@
 package org.example.view;
 
 import org.example.Main;
+import org.example.crud.Neo4jCRUD;
 import org.example.model.Category;
 import org.example.model.Post;
 import org.example.model.Usuario;
@@ -64,7 +65,9 @@ public class ContentScreen {
         String category = scanner.nextLine();
         Usuario loggedUser = authService.getLoggedUser();
 
-        contentService.savePost(new Post(loggedUser.get_id(), post, Category.valueOf(category)));
+        Post newPost = contentService.savePost(new Post(loggedUser.get_id(), post, Category.valueOf(category)));
+        Neo4jCRUD.crearContenido(newPost);
+
         showMenu();
     }
 
