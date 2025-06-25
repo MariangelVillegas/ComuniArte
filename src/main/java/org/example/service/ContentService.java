@@ -40,4 +40,17 @@ public class ContentService {
         post.addComment(new Comment(user.get_id(), comentario));
         contentRepository.updatePost(post);
     }
+
+    public List<Post> getMyPosts(String id) {
+        return contentRepository.getAllPostsById(id);
+    }
+
+    public void updatePost(Post post, String newText) {
+        post.setText(newText);
+        contentRepository.updatePost(post);
+    }
+
+    public void delete(Post post) {
+        contentRepository.deletePost(post.get_id());
+    }
 }

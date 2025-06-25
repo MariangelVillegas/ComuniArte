@@ -73,6 +73,10 @@ public class Post {
         return visits;
     }
 
+    public void setText(String text) {
+        this.text = text;
+    }
+
     public LocalDateTime getCreatedAt() {return createdAt;}
     @Override
     public String toString() {

@@ -10,7 +10,9 @@ import org.example.view.LoginScreen;
 import redis.embedded.RedisServer;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
@@ -94,17 +96,14 @@ public class Main {
     }
 
     private static void listUsers(){
-        int i = 1;
-        for(Usuario usuario: usuarioRepositorio.obtenerTodos()){
-            System.out.println("Usuario #" + i);
-            System.out.println("DNI: " + usuario.get_id());
-            System.out.println("Nombre: " + usuario.getNombre());
-            System.out.println("Apellido: " + usuario.getApellido());
-            System.out.println("Email: " + usuario.getEmail());
-            System.out.println("Edad: " + usuario.getEdad());
-            System.out.println("!!!!!!!!!!!!!!");
-            i+=1;
-        }
+        System.out.println();
+        System.out.println("Lista de usuarios");
+        AtomicInteger index = new AtomicInteger(1);
+        List<Usuario> usuarios = usuarioRepositorio.obtenerTodos();
+        usuarios.forEach(user -> {
+            System.out.println(index.getAndIncrement() + ". " +user.toString());
+        });
+        System.out.println("0. Volver");
     }
 
     private static void getUserbyId(){
@@ -161,8 +160,8 @@ public class Main {
         String idSeguido = scanner.nextLine();
 
         Neo4jCRUD.DejarDeSeguirUsuario(idSeguidor,idSeguido);
-
     }
+
     private static void crearContenido(){
 
         Usuario usuario = new Usuario("123","LO","98");
@@ -174,11 +173,10 @@ public class Main {
         String categoria = scanner.nextLine();
 
         Neo4jCRUD.crearContenido(new Contenido(id_contenido,titulo,categoria,usuario));
-
     }
+
     private static void likeContenido(){
         Neo4jCRUD.Interaccion("123","233");
-
     }
 
 

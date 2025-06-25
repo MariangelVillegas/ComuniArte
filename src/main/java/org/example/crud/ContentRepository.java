@@ -1,5 +1,6 @@
 package org.example.repositorio;
 
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -59,6 +60,16 @@ public class ContentRepository {
         return posts;
     }
 
+    public List<Post> getAllPostsById(String userId) {
+        List<Post> posts = new ArrayList<>();
+
+        for (Document doc : coleccion.find(Filters.eq("id_user", userId))) {
+            posts.add(mapToPost(doc));
+        }
+
+        return posts;
+    }
+
     public void incrementLikes(String postId) {
         coleccion.updateOne(
                 eq("_id", new ObjectId(postId)),
@@ -115,4 +126,5 @@ public class ContentRepository {
 
         return new Post(_id, id_user, text, Category.valueOf(categoryStr), tags, comments, likes, visits, createdAt);
     }
+
 }

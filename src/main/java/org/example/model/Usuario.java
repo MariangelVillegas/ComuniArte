@@ -55,4 +55,10 @@ public class Usuario {
         return tipo;
     }
     public String getPassword() {return password;}
+
+    @Override
+    public String toString() {
+        return ">> " + _id + "\n" +
+                ">> Nombre: " + nombre + " " + apellido + " >> Email: " + email;
+    }
 }
