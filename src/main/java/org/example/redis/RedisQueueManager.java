@@ -4,7 +4,6 @@ import org.example.model.Usuario;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
 
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 public class RedisQueueManager {
@@ -52,17 +51,5 @@ public class RedisQueueManager {
                 e.printStackTrace();
             }
         }).start();
-    }
-
-    public List<String> getComments() {
-        try (Jedis jedis = new Jedis(LOCALHOST, PORT)) {
-            return jedis.lrange(CHAT_CHANNEL, 0, -1);
-        }
-    }
-
-    public List<String> getQuestions() {
-        try (Jedis jedis = new Jedis(LOCALHOST, PORT)) {
-            return jedis.lrange(QUESTIONS_CHANNEL, 0, -1);
-        }
     }
 }

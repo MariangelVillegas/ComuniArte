@@ -20,7 +20,7 @@ public class  Neo4jCRUD {
         try (Session session = conexionNeo4j.getDriver().session()) {
             String query = "CREATE (u:Usuario {id_usuario: $id, nombre: $nombre, tipo: $tipo})";
             session.run(query, Values.parameters(
-                    "id", usuario.getId_usuario(),
+                    "id", usuario.get_id(),
                     "nombre", usuario.getNombre(),
                     "tipo", usuario.getTipo()
             ));
@@ -101,7 +101,7 @@ public class  Neo4jCRUD {
         } catch (Exception e) {
             System.err.println("Error guardando en Neo4j: " + e.getMessage());
         }
-        UsuarioContenido(contenido.getCreador().getId_usuario(), contenido.getId_contenido());
+        UsuarioContenido(contenido.getCreador().get_id(), contenido.getId_contenido());
 
     }
     public static void UsuarioContenido(String id_usuario, String id_contenido) {
