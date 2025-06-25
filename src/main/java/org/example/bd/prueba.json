@@ -1,34 +1,27 @@
-// Colección: usuarios
-{
-  "_id": "id_usuario_unico",
-  "nombre_usuario": "nombre_ejemplo",
-  "email": "usuario@ejemplo.com",
-  "rol": "espectador",
-  "fecha_registro": "2023-01-15T14:30:00Z",
-  "datos_personales": {
-    "nombre_completo": "Juan Pérez",
-    "ubicacion": "Buenos Aires, Argentina",
-    "foto_perfil_url": "https://comuniarte.com/perfiles/juan.jpg"
-  },
-  "historial_reproduccion": [
-    {
-      "contenido_id": "id_contenido_1",
-      "fecha_visualizacion": "2024-06-16T20:00:00Z",
-      "duracion_visualizada_segundos": 1200
-    }
-  ],
-  "intereses": ["Música Andina", "Poesía", "Documentales Sociales"],
-  "listas_personalizadas": [
-    {
-      "nombre_lista": "Mis Favoritos",
-      "contenido_ids": ["id_contenido_3", "id_contenido_4"]
-    }
-  ],
-  "configuracion_notificaciones": {
-    "nuevos_contenidos": true,
-    "mensajes_directos": true
-  },
-  "segmentacion": {
-    "ult_actualizacion": "2024-06-17T09:00:00Z"
-  }
-}
+CREATE (u2)-[:SIGUE {
+  fecha_inicio: datetime('2024-11-15T00:00:00Z'),
+  notificaciones: true,
+  nivel_interes: 9.0
+}]->(u1);
+
+CREATE (u3:Usuario {
+id: 'user003',
+nombre: 'Ana Rodríguez',
+tipo: 'creador',
+fecha_registro: datetime('2024-03-10T00:00:00Z'),
+ubicacion: 'Medellín, Colombia',
+categorias: ['musica', 'folk', 'tradicional'],
+nivel_influencia: 6.8,
+seguidores_count: 890
+});
+
+
+// Crear relaciones CREA
+CREATE (u1)-[:CREA {
+fecha_creacion: datetime('2024-12-01T00:00:00Z'),
+tiempo_invertido: 120
+}]->(c1);
+
+MATCH (u1:Usuario)-[:INTERESA]->(cat:Categoria)<-[:INTERESA]-(u2:Usuario)
+WHERE u1.id = 'user002' AND u1 <> u2
+RETURN u2.nombre, u2.tipo, collect(cat.nombre) as intereses_comunes
